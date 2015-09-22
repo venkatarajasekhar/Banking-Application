@@ -11,8 +11,24 @@ using namespace std;
 
 Manager::Manager()
 {
-	id = NULL;
+	id = 0;
 }
-void Manager::setID(int cid){ id = cid; }
- int Manager::getID(){ return id; }
+Manager::Manager(int ID, vector<client> list)
+{
+	
+}
+Manager::~Manager()
+{
+	
+};
+
+void Manager::setID(int cid)
+{
+	id = cid; 
+	
+}
+ int Manager::getID()
+ { 
+ 	return id; 
+ 	 }
 
