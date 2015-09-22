@@ -14,7 +14,7 @@ Mperson::Mperson(int ID)
 }
 
 Mperson::Mperson(){
-	id = NULL;
+	id = 0;
 }
 Mperson::~Mperson()
 {
