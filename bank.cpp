@@ -19,57 +19,10 @@ Banking Program
 #include "Mperson.h"
 #include "client.h"
 #include "Manager.h"
+
 #define ON true
 #define OFF false
 using namespace std;
-
-// The Customer class
-
-//Manager Menus and Functions
-void managerMenu(vector<client>& clients);					 // Brings user to the manager screen
-bool openAccount(vector<client>& clients, int accID, string firstName, string lastName);
-bool deleteAccount(vector<client>& clients, int accID); //
-void printManMenu(void);    //Prints manager menu
-
-//Maintenance Menus and Functions
-void maintenanceMenu(void);		 // Brings user to the maintenance screen
-void toggleExecutionTraces(void);   // Sets execution traces from on --> off or from off --> on.
-void setExecutionTraces(bool x);   // Turns execution traces on or off depending on x. (true = on, false = off)
-void writeToET(string str);  // Writes str to the file execution_traces.txt 
-void printExecutionTraces(void);
-void clearExecutionTracesLog(void);
-void saveExternals(Manager manager, Mperson maintain);
-
-//Client Menus and Functions
-void clientMenu(client& theClient, vector<client>& clients); //Brings user to the screen for clients
-void printClientMenu(client& theClient, bool cheq, bool sav);// Prints the options available to the client
-void purchaseMenu(client& theClient);
-void savePurchases(vector<client>& clients);
-void viewPurchases(client& theClient);
-void saveVendor(client& theClient, double price);
-void deposit(client& theClient);
-void withdraw(client& theClient);
-void withdrawChequing(client& theClient);
-void withdrawSavings(client& theClient);
-void transfer(client& theClient);
-void transferChequing(client& theClient);
-void transferSavings(client& theClient);
-void chequing(client& theClient, bool cheq, bool sav);
-void savings(client& theClient, bool sav, bool cheq);
-void updateMonth(vector<client>& clients);
-void payInFullMenu(client& theClient);
-void writeFailedPayments(client& theClient);
-//Helper functions
-int getNumber();        // Retrieves an int value from the user
-double getDouble();     // Retrieves a double value from the user
-void saveClients(vector<client>& clients);					 // Writes client data to text file/ saves the changes
-int getAccountIndex(vector<client>& clients, int targetAccNum, int low, int high);
-bool compareAccountLastName(client a, client b);
-bool compareAccountNums(client a, client b);
-bool existsInDatabase(vector<client>& clients, int targetAccID);
-void sortByAccountNumber(vector<client>& clients);
-vector<client> sortByLastName(vector<client> clients);
-bool penalty(client& theClient, double amount);
 
 // Global Variables
 bool executionTraces; // This is defined main().
@@ -84,11 +37,20 @@ int main()
 	// Initialize executionTraces.
 	// Read from the file execution_traces.txt and check the first line.  The first line saves the state of whether the ET is on/off.
 	// 1 = ON, 0 = OFF
+	try{
 	ifstream etFile("execution_traces.txt");
+	}catch(...){
+		
+	}
+	
 	if (etFile.is_open()){
 		// Read the file's first line.
 		string etStr;
+		try{
 		getline(etFile, etStr);
+		}catch(...){
+			
+		}
 		if (etStr.compare("1") == 0){  // If 1, then on
 			executionTraces = ON;
 		}
@@ -107,14 +69,18 @@ int main()
 	}
 
 	// initialize everything else
-	const int managerId = NULL;
-	const int maintenId = NULL;
+	const int managerId = 0;
+	const int maintenId = 0;
 	vector<client> clients;		// THe client vector array
 	int id, i = 0, getId, pin;;
 	double chequings, savings, credLimit, cred, limit, owed;
 	string line, name1, name2, freeze, label, full;
-	client *f1;
+	client *f1 = NULL;
+	try{
 	ifstream myfile("clients.txt");
+	}catch(...){
+		
+	}
 
 
 	// Read client info from text file into vector array
@@ -123,7 +89,12 @@ int main()
 		{
 			stringstream ss(line);
 			ss >> id >> chequings >> savings >> name1 >> name2 >> pin >> freeze >> limit >> full >> owed;
+			try{
 			f1 = new client;
+			}catch (std::bad_alloc& ba)
+                        {
+                          std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+                                                                      }
 			f1->setId(id);
 			f1->setChequing(chequings);
 			f1->setSavings(savings);
@@ -151,18 +122,26 @@ int main()
 	}
 	i = 0;
 	double item;
+	try{
 	ifstream purchaseFile("client_purchases.txt");
+	}catch(...){
+		
+	}
 	// Read client purchases from text file into vector array
 	if (purchaseFile.is_open()){
 		while (getline(purchaseFile, line))
 		{
+			try{
 			istringstream ss(line);
+			}catch(...){
+				
+			}
 			ss >> name1;
 			do
 			{
-				double item = NULL;
+				double item = 0;
 				ss >> item; 
-				if (item!=NULL)
+				if (item)
 					clients[i].purchase(item);
 			} while (ss);
 			
@@ -176,8 +155,11 @@ int main()
 	
 	Mperson maintainPerson;
 	Manager manager;
+	try{
 	ifstream maintainFile("externals.txt");
-
+	}catch(...){
+		
+	}
 	// Read external info from text file;
 	if (maintainFile.is_open()){
 		// Get maintainance person ID from file
@@ -263,23 +245,56 @@ void clientMenu(client& theClient, vector<client>& clients){
 		switch (getNumber()) {
 		case 1:
 			et << theClient.getId() << " selected 1: Chequing\n"; writeToET(et.str()); et.str("");
+			try{
 			chequing(theClient, cheq, sav);
+			}catch(...){
+				
+			}
+			try{
 			saveClients(clients);
+			}catch(...){
+				
+			}
 			break;
 		case 2:
 			et << theClient.getId() << " selected 2: Savings\n"; writeToET(et.str()); et.str("");
-			savings(theClient, sav, cheq);
-			saveClients(clients);
+			try{
+				savings(theClient, sav, cheq);
+			}catch(...){
+				
+			}
+			try{
+				saveClients(clients);
+				
+			}catch(...){
+				
+			}
 			break;
 		case 3:
 			et << theClient.getId() << " selected 3: Deposit\n"; writeToET(et.str()); et.str("");
+			try{
 			deposit(theClient);
+			}catch(...){
+				
+			}
+			try{
 			saveClients(clients);
+			}catch(...){
+				
+			}
 			break;
 		case 4:
 			et << theClient.getId() << " selected 4: Withdraw\n"; writeToET(et.str()); et.str("");
-			withdraw(theClient);
+			try{
+				withdraw(theClient);
+			}catch(...){
+				
+			}
+			try{
 			saveClients(clients);
+			}catch(...){
+				
+			}
 			break;
 		case 5:
 			et << theClient.getId() << " selected 5: View balance\n"; writeToET(et.str()); et.str("");
@@ -294,8 +309,16 @@ void clientMenu(client& theClient, vector<client>& clients){
 			break;
 		case 6:
 			et << theClient.getId() << " selected 6: Tranfer\n"; writeToET(et.str()); et.str("");
+			try{
 			transfer(theClient);
-			saveClients(clients);
+			}catch(...){
+				
+			}
+			try{
+				saveClients(clients);
+			}catch(...){
+				
+			}
 			break;
 		case 7:
 			et << theClient.getId() << " selected 7: Purchase\n"; writeToET(et.str()); et.str("");
@@ -304,21 +327,49 @@ void clientMenu(client& theClient, vector<client>& clients){
 				cout << endl << "Your Account is frozen. You may not purchase anything\n";
 			}
 			else{
-				purchaseMenu(theClient);
+				try{
+					purchaseMenu(theClient);
+				}catch(...){
+					
+				}
+				try{
 				savePurchases(clients);
+				}catch(...){
+					
+				}
+				try{
 				saveClients(clients);
+				}catch(...){
+					
+				}
 			}
+			try{
 			saveClients(clients);
+			}catch(...){
+				
+			}
 			
 			break;
 		case 8:
 			et << theClient.getId() << " selected 8: View Purchaces\n"; writeToET(et.str()); et.str("");
+			try{
 			viewPurchases(theClient);
+			}catch(...){
+				
+			}
 			break;
 		case 9:
 			et << theClient.getId() << " selected 9: Toggle Pay in full\n"; writeToET(et.str()); et.str("");
-			payInFullMenu(theClient);
-			saveClients(clients);
+			try{
+				payInFullMenu(theClient);
+			}catch(...){
+				
+			}
+			try{
+				saveClients(clients);
+			}catch(...){
+				
+			}
 			break;
 		case 10:
 			et << theClient.getId() << " selected 10: Logout\n"; writeToET(et.str()); et.str("");
@@ -415,9 +466,16 @@ void purchaseMenu(client& theClient){
 void writeFailedPayments(client& theClient){
 	et << "Notifying Bank of failed payment. Storing Failed payment to file.\n"; writeToET(et.str()); et.str("");
 	ofstream failedFile;
-
+        try{
 	failedFile.open("failed_payments.txt", ios_base::app);
+        }catch(...){
+        	
+        }
+        try{
 	failedFile << theClient.getId() << " " << fixed << theClient.getAmmountOwing()/10 << endl;
+        }catch(...){
+        	
+        }
 }
 void chequing(client& theClient, bool cheq, bool sav){
 	bool done = false;
@@ -515,11 +573,19 @@ void transfer(client& theClient){
 		switch (getNumber()){
 		case 1:
 			et << theClient.getId() << " selected 1: Transfer from Chequing\n"; writeToET(et.str()); et.str("");
+			try{
 			transferChequing(theClient);
+			}catch(...){
+				
+			}
 			return;
 		case 2:
 			et << theClient.getId() << " selected 2: Transfer from Savings\n"; writeToET(et.str()); et.str("");
+			try{
 			transferSavings(theClient);
+			}catch(...){
+				
+			}
 			return;
 		case 3:
 			et << theClient.getId() << " selected 3: Cancel\n"; writeToET(et.str()); et.str("");
@@ -591,13 +657,21 @@ void withdraw(client& theClient){
 			//Withdraw from chequing account.
 		case 1:{
 			et << theClient.getId() << " selected 1: Withdraw from Chequing\n"; writeToET(et.str()); et.str("");
+			try{
 			withdrawChequing(theClient);
+			}catch(...){
+				
+			}
 			return;
 		}
 			   // Withdraw from savings account.
 		case 2:{
 			et << theClient.getId() << " selected 2: Withdraw from Savings\n"; writeToET(et.str()); et.str("");
+			try{
 			withdrawSavings(theClient);
+			}catch(...){
+				
+			}
 			return;
 		}
 			   // Cancel.
@@ -636,7 +710,7 @@ start:
 		// Check if this puts the user under $1000 in the chequing account and apply a penalty if this is true.
 		if (penalty(theClient, x)) { // There is a penalty.
 			et << theClient.getId() << " faces a penalty for the withdrawal\n"; writeToET(et.str()); et.str("");
-		warning:
+		
 			// Warn the user if they want to proceed with the withdrawal.
 			cout << "Because this transaction will bring your chequing account's balance below $1000.00, a\n";
 			cout << "$2.00 fee will applied. Do you wish to continue?\n";
@@ -681,8 +755,16 @@ start:
 			}
 		}
 		else { // No penalty.
+			try{
 			theClient.setChequing(theClient.getChequing() - x);
-			theClient.setSavings(theClient.getSavings() + x);
+			}catch(...){
+				
+			}
+			try{
+				theClient.setSavings(theClient.getSavings() + x);
+			}catch(...){
+				
+			}
 			cout << endl << "Successfully transferred $" << fixed << x << " from chequing account\n";
 			cout << "Your current chequing balance is $" << fixed << theClient.getChequing() << endl;
 			cout << "Your current savings balance is $" << fixed << theClient.getSavings() << endl;
@@ -706,8 +788,16 @@ void transferSavings(client& theClient) {
 		cout << endl << "Error: Insufficient funds. You have $" << fixed << theClient.getSavings() << " in your Savings account\n";
 		return;
 	}
+	try{
 	theClient.setChequing(theClient.getChequing() + ammount);
-	theClient.setSavings(theClient.getSavings() - ammount);
+	}catch(...){
+		
+	}
+	try{
+		theClient.setSavings(theClient.getSavings() - ammount);
+	}catch(...){
+		
+	}
 	cout << "Successfully transfered $" << fixed << ammount << " from Savings account to Chequing Account\n";
 	cout << "Your current chequing balance is $" << fixed << theClient.getChequing() << endl;
 	cout << "Your current savings balance is $" << fixed << theClient.getSavings() << endl;
@@ -722,7 +812,7 @@ void transferSavings(client& theClient) {
 }
 
 void withdrawChequing(client& theClient) {
-start:
+
 	cout << endl << "How much would you like to withdraw?\n";
 	cout << "Enter 0 to cancel.\n";
 	double x = getDouble();
@@ -739,7 +829,7 @@ start:
 		// Check if this puts the user under $1000 in the chequing account and apply a penalty if this is true.
 		if (penalty(theClient, x)) { // There is a penalty.
 			et << theClient.getId() << " will take a penalty if he/she proceeds with the withdrawal\n"; writeToET(et.str()); et.str("");
-		warning:
+	
 			// Warn the user if they want to proceed with the withdrawal.
 			cout << "Because this transaction will bring your chequing account's balance below $1000.00, a\n";
 			cout << "$2.00 fee will applied. Do you wish to continue?\n";
@@ -1322,7 +1412,11 @@ vector<client> sortByLastName(vector<client> clients)
 		return clients;
 	}
 	// Sort the vector, but do not save the changes.
+	try{
 	sort(clients.begin(), clients.end(), compareAccountLastName);
+	}catch(...){
+		
+	}
 	return clients;
 
 }
@@ -1333,9 +1427,17 @@ bool existsInDatabase(vector<client>& clients, int targetAccID)
 		return false;
 	}
 	// First ensure that the vector is ordered (by account number).
+	try{
 	sortByAccountNumber(clients);
+	}catch(...){
+		
+	}
 	// Search using the binary search method.
+	try{
 	int result = getAccountIndex(clients, targetAccID, 0, clients.size() - 1);
+	}catch(...){
+		
+	}
 	if (result == -1){
 		return false;
 	}
@@ -1376,7 +1478,6 @@ int getAccountIndex(vector<client>& clients, int targetAccNum, int low, int high
 void maintenanceMenu(void){
 	et << "maintenanceMenu()\n"; writeToET(et.str()); et.str("");
 	cout << endl << "Welcome System Maintenance Person!\n";
-start:
 	bool logout = false;
 	while (!logout){
 		cout << endl << "***********---What would you like to do?---*********** \n";
