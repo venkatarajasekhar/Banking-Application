@@ -22,19 +22,66 @@ client::client()
 	payInFull = false;
 }
 //Setters
-void client::setChequing(double chequing){ chequingAcc = chequing; }
-void client::setSavings(double saving){ savingsAcc = saving; }
-void client::setId(int cid){ id = cid; }
-void client::setFirstName(string name){ name1 = name; }
-void client::setLastName(string name){ name2 = name; }
-void client::setCredLimit(double credL){ limit = credL; }
-void client::setCred(double cre){ cred = cre; }
-void client::setPin(int PIN){ pin = PIN; }
-void client::setFrozen(bool setit){ frozen=setit; }
-void client::setPayInFull(bool set){ payInFull = set; }
-void client::setInterest(double inter){ interest = inter; }
+void client::setChequing(double chequing)
+{ 
+	chequingAcc = chequing; 
+	
+}
+void client::setSavings(double saving)
+{ 
+	savingsAcc = saving; 
+	
+}
+void client::setId(int cid)
+{ 
+	id = cid; 
+	
+}
+void client::setFirstName(string name)
+{ 
+	name1 = name; 
+	
+}
+void client::setLastName(string name)
+{ 
+	name2 = name; 
+	
+}
+void client::setCredLimit(double credL)
+{ 
+	limit = credL; 
+	
+}
+void client::setCred(double cre)
+{ 
+	cred = cre; 
+	
+}
+void client::setPin(int PIN)
+{ 
+	pin = PIN; 
+	
+}
+void client::setFrozen(bool setit)
+{ 
+	frozen=setit;
+	}
+void client::setPayInFull(bool set)
+{ 
+	payInFull = set; 
+	
+}
+void client::setInterest(double inter)
+{ 
+	interest = inter; 
+	
+}
 //Getters
-double client::getSavings(){ return savingsAcc; }		// return amount under savings account
+double client::getSavings()
+{ 
+	return savingsAcc; 
+	
+}		// return amount under savings account
 double client::getChequing(){ return chequingAcc; }		// Return amount under chequing account
 int client::getId(){ return id; }						// Return user Id;
 string client::getFirstName(){ return name1; }			// Return first name;
